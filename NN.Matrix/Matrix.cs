@@ -6,7 +6,7 @@ using System.Globalization;
 namespace NN.Matrix
 {
     /// <summary>
-    /// 
+    /// Simple matrix
     /// </summary>
     /// <remarks>
     /// https://en.wikipedia.org/wiki/Matrix_multiplication
@@ -24,6 +24,7 @@ namespace NN.Matrix
         private double[,] data;
         public static string nodeName = "Matrix";
         #endregion
+
 
         #region -> Properties
         public int Row { get; private set; }
@@ -108,6 +109,12 @@ namespace NN.Matrix
 
 
         #region -> Methods
+        /// <summary>
+        /// Multiply matrix a with matrix b
+        /// </summary>
+        /// <param name="a">First input matrix</param>
+        /// <param name="b">Second input matrix</param>
+        /// <returns>New matrix contains product of two input matrices</returns>
         public static Matrix operator *(Matrix a, Matrix b)
         {
             if (a.Col != b.Row)
@@ -126,6 +133,13 @@ namespace NN.Matrix
             return c;
         }
 
+        /// <summary>
+        /// Multiply matrix a with matrix b
+        /// and put result into matrix c
+        /// </summary>
+        /// <param name="a">First input matrix</param>
+        /// <param name="b">Second input matrix</param>
+        /// <param name="c">Output matrix</param>
         public static void Multiply(Matrix a, Matrix b, Matrix c)
         {
             if (c.Row != a.Row)
@@ -162,7 +176,10 @@ namespace NN.Matrix
             }
         }
 
-
+        /// <summary>
+        /// Transpose matrix to new one
+        /// </summary>
+        /// <returns></returns>
         public Matrix Transpose()
         {
             Matrix other =
@@ -173,6 +190,10 @@ namespace NN.Matrix
             return other;
         }
 
+        /// <summary>
+        /// Transpose matrix to provided target matrix
+        /// </summary>
+        /// <param name="other"></param>
         public void Transpose(Matrix other)
         {
             #region -> Compatibleness check
@@ -209,12 +230,19 @@ namespace NN.Matrix
 
         }
 
+        /// <summary>
+        /// String representation of matrix demensions
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return string.Format(
                 "[{0}x{1}]", Row, Col);
         }
 
+        /// <summary>
+        /// Text representation of matrix data
+        /// </summary>
         public string Text
         {
             get
@@ -239,6 +267,11 @@ namespace NN.Matrix
 
 
         #region -> Ctor
+        /// <summary>
+        /// Simple matrix
+        /// </summary>
+        /// <param name="row">Matrix lines count</param>
+        /// <param name="col">Matrix columns count</param>
         public Matrix(int row, int col)
         {
             Row = row;
@@ -247,8 +280,18 @@ namespace NN.Matrix
             data = new double[row, col];
         }
 
+        /// <summary>
+        /// Simple matrix
+        /// </summary>
+        /// <param name="xe">Serialized matrix</param>
         public Matrix(XElement xe) { this.XContent = xe; }
 
+        /// <summary>
+        /// New simple matrix with random initialized content
+        /// </summary>
+        /// <param name="row">Matrix lines count</param>
+        /// <param name="col">Matrix columns count</param>
+        /// <returns></returns>
         public static Matrix Random(int row, int col)
         {
             Matrix matrix = Half(row, col);
@@ -270,6 +313,13 @@ namespace NN.Matrix
         public static Matrix Half(int row, int col) { return Homogeneous(row, col, 0.5); }
         public static Matrix One(int row, int col) { return Homogeneous(row, col, 1.0); }
 
+        /// <summary>
+        /// New simple matrix filled with single value content
+        /// </summary>
+        /// <param name="row">Matrix lines count</param>
+        /// <param name="col">Matrix columns count</param>
+        /// <param name="val">Matrix filling value</param>
+        /// <returns></returns>
         public static Matrix Homogeneous(int row, int col, double val)
         {
             if (row <= 0)

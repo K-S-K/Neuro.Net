@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages
+/_Test/Release
+/_Bin/Release
+/UnitTests/obj/Release
+/NN.Solver/obj
+/NN.Solver/bin/Release
+/NN.Matrix/obj
+/.vs

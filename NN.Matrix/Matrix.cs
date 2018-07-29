@@ -27,14 +27,31 @@ namespace NN.Matrix
 
 
         #region -> Properties
+        /// <summary>
+        /// Matrix lines count
+        /// </summary>
         public int Row { get; private set; }
+
+        /// <summary>
+        /// Matrix columns count
+        /// </summary>
         public int Col { get; private set; }
+
+        /// <summary>
+        /// Matrix data indexer
+        /// </summary>
+        /// <param name="row">Matrix line number</param>
+        /// <param name="col">Matrix column number</param>
+        /// <returns></returns>
         public double this[int row, int col]
         {
             get { return data[row, col]; }
             set { data[row, col] = value; }
         }
 
+        /// <summary>
+        /// XML serialization
+        /// </summary>
         public XElement XContent
         {
             get

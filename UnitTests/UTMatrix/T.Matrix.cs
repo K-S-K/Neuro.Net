@@ -64,7 +64,6 @@ namespace UTMatrx
             Matrix b = new Matrix(XElement.Parse(Data.XML_B));
             Matrix c = a * b;
 
-
             string txActual = c.Text;
 
             XElement xeActual = c.XContent;

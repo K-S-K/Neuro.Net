@@ -31,7 +31,6 @@ namespace UTMatrx
                 txActual, txExpctd, subDirName,
                 "MatrixText", "MatrixText changed");
 
-
             XElement xeActual = m.XContent;
             XElement xeExpctd = XElement.Parse(Data.XML_A);
 

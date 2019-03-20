@@ -23,7 +23,6 @@ namespace UTMatrx
             m[1, 0] = -3; m[1, 1] = 0;
             m[2, 0] = 4; m[2, 1] = -1;
 
-
             string txActual = m.Text;
             string txExpctd = Data.TextA;
 

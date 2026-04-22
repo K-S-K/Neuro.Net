@@ -272,7 +272,7 @@ namespace NN.Matrix
                     {
                         double v = this[row, col];
                         sb.AppendFormat("  {0,6}",
-                            v.ToString("0.##0"));
+                            v.ToString("0.##0", CultureInfo.InvariantCulture));
                     }
                     sb.AppendLine();
                 }
@@ -311,18 +311,16 @@ namespace NN.Matrix
         /// <returns></returns>
         public static Matrix Random(int row, int col)
         {
-            Matrix matrix = Half(row, col);
+            return Random(row, col, new Random());
+        }
 
-            Random rnd = new Random();
+        public static Matrix Random(int row, int col, Random rnd)
+        {
+            Matrix matrix = new Matrix(row, col);
 
             for (int r = 0; r < row; r++)
-            {
                 for (int c = 0; c < col; c++)
-                {
-                    matrix[r, c] =
-                        0.1 * rnd.Next(0, 10);
-                }
-            }
+                    matrix[r, c] = rnd.NextDouble() - 0.5;
 
             return matrix;
         }

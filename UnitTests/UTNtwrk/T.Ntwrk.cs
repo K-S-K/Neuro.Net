@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Xml.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,6 +13,90 @@ namespace UnitTests.UTNtwrk
     public class UT_Ntwrk : TestBase
     {
         private const string subDirName = "Ntwrk";
+
+        // XOR truth table
+        private static readonly double[][] XorInputs = {
+            new[] { 0.0, 0.0 },
+            new[] { 0.0, 1.0 },
+            new[] { 1.0, 0.0 },
+            new[] { 1.0, 1.0 }
+        };
+        private static readonly double[][] XorTargets = {
+            new[] { 0.0 },
+            new[] { 1.0 },
+            new[] { 1.0 },
+            new[] { 0.0 }
+        };
+
+        private static List<NeuroSignal> MakeSignals(double[] values)
+        {
+            var list = new List<NeuroSignal>();
+            for (int i = 0; i < values.Length; i++)
+                list.Add(new NeuroSignal(i, values[i]));
+            return list;
+        }
+
+        [TestMethod]
+        public void XorTrain_LossDecreases()
+        {
+            NeuroNetwork n = new NeuroNetwork(2, 4, 1);
+            n.Seed(0);
+
+            double InitialError()
+            {
+                double total = 0;
+                for (int i = 0; i < XorInputs.Length; i++)
+                {
+                    n.ProcessData(MakeSignals(XorInputs[i]));
+                    double err = 0;
+                    int j = 0;
+                    foreach (INeuroTransmitter knob in n.SynapticKnobs)
+                        err += Math.Pow(XorTargets[i][j++] - knob.Value, 2);
+                    total += err;
+                }
+                return total;
+            }
+
+            double before = InitialError();
+
+            Random rng = new Random(0);
+            for (int epoch = 0; epoch < 5000; epoch++)
+            {
+                int i = rng.Next(XorInputs.Length);
+                n.Train(MakeSignals(XorInputs[i]), XorTargets[i], learningRate: 0.5);
+            }
+
+            double after = InitialError();
+
+            Assert.IsTrue(after < before,
+                $"Training did not reduce error. Before: {before:F3}, After: {after:F3}");
+        }
+
+        [TestMethod]
+        public void XorTrain_Converges()
+        {
+            NeuroNetwork n = new NeuroNetwork(2, 4, 1);
+            n.Seed(42);
+
+            Random rng = new Random(42);
+            for (int epoch = 0; epoch < 30000; epoch++)
+            {
+                int i = rng.Next(XorInputs.Length);
+                n.Train(MakeSignals(XorInputs[i]), XorTargets[i], learningRate: 0.5);
+            }
+
+            for (int i = 0; i < XorInputs.Length; i++)
+            {
+                n.ProcessData(MakeSignals(XorInputs[i]));
+                double actual = 0;
+                foreach (INeuroTransmitter knob in n.SynapticKnobs)
+                    actual = knob.Value;
+
+                double expected = XorTargets[i][0];
+                Assert.IsTrue(Math.Abs(actual - expected) < 0.1,
+                    $"XOR[{XorInputs[i][0]},{XorInputs[i][1]}]: expected {expected}, got {actual:F3}");
+            }
+        }
 
         [TestMethod]
         public void NtwrkSolve()

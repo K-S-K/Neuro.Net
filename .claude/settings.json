@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet test *)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')",
+      "Bash(xxd /Users/ksk-work/Projects/Neuro.Net/UnitTests/UTNtwrk/CalculationLog.txt)",
+      "Bash(xxd \"/Users/ksk-work/Projects/Neuro.Net/UnitTests/bin/Debug/net10.0/TestResults/Ntwrk/Calculation.Actual.txt\")",
+      "Bash(xxd \"/Users/ksk-work/Projects/Neuro.Net/UnitTests/bin/Debug/net10.0/TestResults/Ntwrk/Calculation.Expctd.txt\")",
+      "Bash(xxd \"/Users/ksk-work/Projects/Neuro.Net/UnitTests/bin/Debug/net10.0/TestResults/Matrix/MatrixText.Actual.txt\")",
+      "Bash(xxd \"/Users/ksk-work/Projects/Neuro.Net/UnitTests/bin/Debug/net10.0/TestResults/Matrix/MatrixText.Expctd.txt\")",
+      "Bash(dotnet clean *)"
+    ]
+  }
+}

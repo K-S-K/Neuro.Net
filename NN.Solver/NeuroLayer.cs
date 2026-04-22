@@ -53,14 +53,72 @@ namespace NN.Solver
 
         #region -> Methods
         /// <summary>
-        /// Process input data, 
-        /// calculate output data, 
+        /// Process input data,
+        /// calculate output data,
         /// fire output signal event.
         /// </summary>
         /// <param name="incoming">Incoming parameters set</param>
         public void ProcessData(IEnumerable<INeuroTransmitter> incoming)
         {
             lock (sync) { ProcessInputData(incoming); }
+        }
+
+        /// <summary>
+        /// Backpropagate errors through this layer and update weights.
+        /// Returns the error signal for the previous layer.
+        /// </summary>
+        /// <param name="errors">Error for each output neuron of this layer</param>
+        /// <param name="learningRate">Learning rate</param>
+        public double[] Backpropagate(double[] errors, double learningRate)
+        {
+            int outCount = output.Count;
+            int inCount = input.Count;
+
+            // delta[i] = error[i] * activation'(output[i])
+            double[] deltas = new double[outCount];
+            for (int i = 0; i < outCount; i++)
+            {
+                double o = output[i].Value;
+                double deriv = Role == LayerRole.Input ? 1.0 : o * (1.0 - o);
+                deltas[i] = errors[i] * deriv;
+            }
+
+            // propagate error back through weight matrix: W^T * delta
+            double[] prevErrors = new double[inCount];
+            for (int j = 0; j < inCount; j++)
+                for (int i = 0; i < outCount; i++)
+                    prevErrors[j] += weights[i, j] * deltas[i];
+
+            // update weights (input layer is a passthrough — nothing to train)
+            if (Role != LayerRole.Input)
+                for (int i = 0; i < outCount; i++)
+                    for (int j = 0; j < inCount; j++)
+                        weights[i, j] += learningRate * deltas[i] * input[j].Value;
+
+            return prevErrors;
+        }
+
+        /// <summary>
+        /// Overwrite the weight matrix from a 2-D array [outputNeuron, inputNeuron].
+        /// Dimensions must match the layer topology.
+        /// </summary>
+        public void SetWeights(double[,] w)
+        {
+            for (int i = 0; i < w.GetLength(0); i++)
+                for (int j = 0; j < w.GetLength(1); j++)
+                    weights[i, j] = w[i, j];
+        }
+
+        /// <summary>
+        /// Re-initialize all trainable weights with uniform random values in [-0.5, 0.5].
+        /// The input layer is a passthrough and is not affected.
+        /// </summary>
+        public void RandomizeWeights(Random rnd)
+        {
+            if (Role == LayerRole.Input) return;
+            for (int i = 0; i < weights.Row; i++)
+                for (int j = 0; j < weights.Col; j++)
+                    weights[i, j] = rnd.NextDouble() - 0.5;
         }
 
         public override string ToString()
@@ -150,28 +208,13 @@ namespace NN.Solver
             input = new Dictionary<int, NeuroSignal>();
             output = new Dictionary<int, NeuroSignal>();
 
-            weights =
-                Role == LayerRole.Input ? Matrix.Matrix.One(countIn, countOut) :
-                Role == LayerRole.Output ? Matrix.Matrix.Half(countIn, countOut) :
-                 Matrix.Matrix.Half(countIn, countOut);
+            // weights[outputNeuron, inputNeuron] — dimensions are [countOut x countIn]
+            weights = Role == LayerRole.Input
+                ? Matrix.Matrix.One(countOut, countIn)
+                : Matrix.Matrix.Random(countOut, countIn);
 
             ActivationFooType activation =
                 Role == LayerRole.Input ? ActivationFooType.Identity : ActivationFooType.Sigmoid;
-
-            #region -> TMP
-            if (id == 2)
-            {
-                weights[0, 0] = 0.9; weights[0, 1] = 0.3; weights[0, 2] = 0.4;
-                weights[1, 0] = 0.2; weights[1, 1] = 0.8; weights[1, 2] = 0.2;
-                weights[2, 0] = 0.1; weights[2, 1] = 0.5; weights[2, 2] = 0.6;
-            }
-            if (id == 3)
-            {
-                weights[0, 0] = 0.3; weights[0, 1] = 0.7; weights[0, 2] = 0.5;
-                weights[1, 0] = 0.6; weights[1, 1] = 0.5; weights[1, 2] = 0.2;
-                weights[2, 0] = 0.8; weights[2, 1] = 0.1; weights[2, 2] = 0.9;
-            }
-            #endregion
 
             for (int num = 0; num < countIn; num++)
             {

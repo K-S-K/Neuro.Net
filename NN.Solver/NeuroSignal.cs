@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Globalization;
 using System.Text;
 
 namespace NN.Solver
@@ -25,7 +25,7 @@ namespace NN.Solver
             StringBuilder sb = new StringBuilder();
 
             sb.AppendFormat("[{0}]:", ItemID);
-            sb.AppendFormat(" {0}", Value.ToString("0.##0"));
+            sb.AppendFormat(" {0}", Value.ToString("0.##0", CultureInfo.InvariantCulture));
 
             return sb.ToString();
         }

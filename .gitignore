@@ -10,3 +10,12 @@
 /NN.Solver/bin/Release
 /NN.Matrix/obj
 /.vs
+bin
+obj
+
+
+# Windows image file caches
+Thumbs.db
+
+# Mac image file caches
+.DS_Store

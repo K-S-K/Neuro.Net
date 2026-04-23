@@ -1,48 +1,46 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
-namespace NN.Solver
+namespace NN.Solver;
+
+/// <summary>
+/// Neurotransmitter
+/// </summary>
+/// <remarks>
+/// It moves signal from pre-synaptic 
+/// vesicles to postsynaptic vesicles
+/// </remarks>
+public class NeuroSignal : INeuroTransmitter
 {
-    /// <summary>
-    /// Neurotransmitter
-    /// </summary>
-    /// <remarks>
-    /// It moves signal from presynaptic 
-    /// vesicles to postsynaptic vesicles
-    /// </remarks>
-    public class NeuroSignal : INeuroTransmitter
+    #region -> Properties
+    public int ItemID { get; }
+    public double Value { get; internal set; }
+    #endregion
+
+
+    #region -> Methods
+    public override string ToString()
     {
-        #region -> Properties
-        public int ItemID { get; private set; }
-        public double Value { get; internal set; }
-        #endregion
+        StringBuilder sb = new ();
 
+        sb.Append($"[{ItemID}]:");
+        sb.Append($" {Value.ToString("0.##0", CultureInfo.InvariantCulture)}");
 
-        #region -> Methods
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendFormat("[{0}]:", ItemID);
-            sb.AppendFormat(" {0}", Value.ToString("0.##0", CultureInfo.InvariantCulture));
-
-            return sb.ToString();
-        }
-        #endregion
-
-
-        #region -> Ctor
-        public NeuroSignal(int id)
-        {
-            ItemID = id;
-            Value = 0.0;
-        }
-
-        public NeuroSignal(int id, double val) : this(id)
-        {
-            Value = val;
-        }
-        #endregion
+        return sb.ToString();
     }
+    #endregion
+
+
+    #region -> Ctor
+    public NeuroSignal(int id)
+    {
+        ItemID = id;
+        Value = 0.0;
+    }
+
+    public NeuroSignal(int id, double val) : this(id)
+    {
+        Value = val;
+    }
+    #endregion
 }

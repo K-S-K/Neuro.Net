@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
-namespace NN.Solver
-{
+namespace NN.Solver;
+
     /// <summary>
     /// 
     /// </summary>
@@ -26,8 +23,8 @@ namespace NN.Solver
 
 
         #region -> Data
-        private NeuroSignal dataOut;
-        private NeuroSignal dataSum;
+        private readonly NeuroSignal dataOut;
+        private readonly NeuroSignal dataSum;
         #endregion
 
 
@@ -50,11 +47,11 @@ namespace NN.Solver
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat("[{0}]: ", Number);
-            sb.AppendFormat("{0}", dataSum.Value.ToString("0.##0"));
+            sb.Append($"[{Number}]: ");
+            sb.Append($"{dataSum.Value.ToString("0.##0")}");
             sb.AppendFormat(" -> ");
-            sb.AppendFormat("{0}", dataOut.Value.ToString("0.##0"));
-            sb.AppendFormat(" ({0})", ActivationMethod);
+            sb.Append($"{dataOut.Value.ToString("0.##0")}");
+            sb.Append($" ({ActivationMethod})");
 
             return sb.ToString();
         }
@@ -86,4 +83,3 @@ namespace NN.Solver
         }
         #endregion
     }
-}

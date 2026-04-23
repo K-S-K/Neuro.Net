@@ -1,4 +1,8 @@
-﻿namespace NN.Solver
+﻿namespace NN.Solver;
+
+public enum LayerRole
 {
-    public enum LayerRole { Input, Inner, Output, }
+    Input,
+    Inner,
+    Output,
 }
